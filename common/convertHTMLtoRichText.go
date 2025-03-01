@@ -72,9 +72,9 @@ func htmlToRichText(htmlText string) []excelize.RichTextRun {
 
 				// Áp dụng định dạng cho nội dung trong thẻ
 				font := &excelize.Font{}
-				if tagName == "b" {
+				if tagName == "b" || tagName == "strong" {
 					font.Bold = true
-				} else if tagName == "i" {
+				} else if tagName == "i" || tagName == "em" {
 					font.Italic = true
 				} else if tagName == "u" {
 					font.Underline = "single"
