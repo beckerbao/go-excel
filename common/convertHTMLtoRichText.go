@@ -10,12 +10,29 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// Hàm chuyển đổi HTML sang Rich Text của Excel
 func htmlToRichText(htmlText string) []excelize.RichTextRun {
+	// Nếu chuỗi rỗng, trả về một đoạn văn bản trống
+	if htmlText == "" {
+		return []excelize.RichTextRun{{Text: ""}}
+	}
+
+	// Thay thế <br>, <br/> và <p> bằng \n
+	htmlText = strings.ReplaceAll(htmlText, "<br>", "\n")
+	htmlText = strings.ReplaceAll(htmlText, "<br/>", "\n")
+	// Thay thế <p> thành "" và </p> thành \n
+	htmlText = strings.ReplaceAll(htmlText, "<p>", "")
+	htmlText = strings.ReplaceAll(htmlText, "</p>", "\n")
+
+	// Stack lưu trữ các thẻ mở
+	type tagInfo struct {
+		tag   string
+		start int
+	}
+	var tagStack []tagInfo
 	var richText []excelize.RichTextRun
 	var textBuffer strings.Builder
-	i := 0
 
+	i := 0
 	for i < len(htmlText) {
 		// Nếu gặp thẻ mở
 		if htmlText[i] == '<' {
@@ -27,8 +44,9 @@ func htmlToRichText(htmlText string) []excelize.RichTextRun {
 				continue
 			}
 
-			// Lấy nội dung của thẻ
+			// Lấy nội dung của thẻ (VD: "b", "/b")
 			tagContent := htmlText[i+1 : i+endTagIndex]
+			isClosingTag := strings.HasPrefix(tagContent, "/")
 			tagName := strings.TrimPrefix(tagContent, "/")
 
 			// Nếu có văn bản trước thẻ, thêm vào richText
@@ -37,34 +55,46 @@ func htmlToRichText(htmlText string) []excelize.RichTextRun {
 				textBuffer.Reset()
 			}
 
-			// Nếu là thẻ mở, xử lý font
-			font := &excelize.Font{}
-			if tagName == "b" {
-				font.Bold = true
-			} else if tagName == "i" {
-				font.Italic = true
-			} else if tagName == "u" {
-				font.Underline = "single"
-			}
+			// Nếu là thẻ mở, đẩy vào stack
+			if !isClosingTag {
+				tagStack = append(tagStack, tagInfo{tag: tagName, start: len(richText)})
+			} else {
+				// Nếu là thẻ đóng, kiểm tra xem có thẻ mở khớp không
+				if len(tagStack) == 0 || tagStack[len(tagStack)-1].tag != tagName {
+					log.Printf("Cảnh báo: Thẻ đóng </%s> không có thẻ mở tương ứng!", tagName)
+					i += endTagIndex + 1
+					continue
+				}
 
-			// Xử lý nội dung bên trong thẻ
-			nestedText := htmlToRichText(htmlText[i+endTagIndex+1:])
+				// Lấy phần văn bản bên trong thẻ
+				startIndex := tagStack[len(tagStack)-1].start
+				tagStack = tagStack[:len(tagStack)-1] // Loại bỏ thẻ đã đóng
 
-			// Áp dụng định dạng lên tất cả phần tử con
-			for j := range nestedText {
-				if nestedText[j].Font == nil {
-					nestedText[j].Font = &excelize.Font{}
+				// Áp dụng định dạng cho nội dung trong thẻ
+				font := &excelize.Font{}
+				if tagName == "b" {
+					font.Bold = true
+				} else if tagName == "i" {
+					font.Italic = true
+				} else if tagName == "u" {
+					font.Underline = "single"
 				}
-				if font.Bold {
-					nestedText[j].Font.Bold = true
+
+				// Cập nhật danh sách RichTextRun
+				for j := startIndex; j < len(richText); j++ {
+					if richText[j].Font == nil {
+						richText[j].Font = &excelize.Font{}
+					}
+					if font.Bold {
+						richText[j].Font.Bold = true
+					}
+					if font.Italic {
+						richText[j].Font.Italic = true
+					}
+					if font.Underline == "single" {
+						richText[j].Font.Underline = "single"
+					}
 				}
-				if font.Italic {
-					nestedText[j].Font.Italic = true
-				}
-				if font.Underline == "single" {
-					nestedText[j].Font.Underline = "single"
-				}
-				richText = append(richText, nestedText[j])
 			}
 
 			// Cập nhật vị trí duyệt
@@ -85,7 +115,7 @@ func htmlToRichText(htmlText string) []excelize.RichTextRun {
 }
 
 // Hàm import từ TXT vào Excel (BỎ QUA HÌNH ẢNH)
-func importFromTextToExcel(txtFileName, excelFileName string) {
+func ImportFromTextToExcel(txtFileName, excelFileName string) {
 	// Mở file TXT
 	file, err := os.Open(txtFileName)
 	if err != nil {
@@ -143,5 +173,5 @@ func importFromTextToExcel(txtFileName, excelFileName string) {
 
 // func main() {
 // 	// Đọc từ TXT và ghi vào Excel
-// 	importFromTextToExcel("output.txt", "imported.xlsx")
+// 	ImportFromTextToExcel("output.txt", "imported.xlsx")
 // }

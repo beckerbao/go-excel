@@ -94,7 +94,7 @@ func RichTextToHTML(richText []excelize.RichTextRun) string {
 }
 
 // Hàm lưu nội dung vào file .txt
-func saveToTextFile(filename, content string) error {
+func SaveToTextFile(filename, content string) error {
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
