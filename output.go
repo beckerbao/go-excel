@@ -24,13 +24,13 @@ func getEnvInt(key string, defaultValue int) int {
 	return intVal
 }
 
-// Chuyển Rich Text từ Excel thành HTML với <p> và giữ nguyên định dạng
+// Chuyển Rich Text từ Excel thành HTML với <p> duy nhất, giữ nguyên định dạng
 func richTextToHTML(richText []excelize.RichTextRun) string {
 	var result strings.Builder
 
-	var paragraph strings.Builder
+	result.WriteString("<p>")
 	for _, rt := range richText {
-		text := rt.Text
+		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Giữ xuống dòng bằng <br>
 		if rt.Font != nil {
 			if rt.Font.Bold {
 				text = "<b>" + text + "</b>"
@@ -42,35 +42,29 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 				text = "<u>" + text + "</u>"
 			}
 		}
-
-		paragraph.WriteString(text)
-		if strings.Contains(rt.Text, "\n") {
-			result.WriteString("<p>" + paragraph.String() + "</p>")
-			paragraph.Reset()
-		}
+		result.WriteString(text)
 	}
-
-	if paragraph.Len() > 0 {
-		result.WriteString("<p>" + paragraph.String() + "</p>")
-	}
+	result.WriteString("</p>")
 
 	return result.String()
 }
 
-// Hàm thay thế ký tự xuống dòng bằng <p>, giữ khoảng cách nếu có nhiều dòng trống
+// Xử lý nội dung PlainText, tách mỗi dòng thành một <p>
 func replaceNewlineWithParagraph(text string) string {
 	if text == "" {
-		return ""
+		return "<p>&nbsp;</p>"
 	}
-	paragraphs := strings.Split(text, "\n")
+
+	lines := strings.Split(text, "\n")
 	var result strings.Builder
-	for _, paragraph := range paragraphs {
-		if paragraph == "" {
-			result.WriteString("<p>&nbsp;</p>") // Giữ khoảng cách nếu có nhiều dòng trống
+	for _, line := range lines {
+		if line == "" {
+			result.WriteString("<p>&nbsp;</p>")
 		} else {
-			result.WriteString(fmt.Sprintf("<p>%s</p>", paragraph))
+			result.WriteString("<p>" + line + "</p>")
 		}
 	}
+
 	return result.String()
 }
 
