@@ -25,12 +25,12 @@ func getEnvInt(key string, defaultValue int) int {
 	return intVal
 }
 
-// Hàm chuyển Rich Text từ Excel thành HTML (chỉ giữ Bold, Italic, Underline)
+// Hàm chuyển Rich Text từ Excel thành HTML (chỉ giữ Bold, Italic, Underline, và thay \n thành <br>)
 func richTextToHTML(richText []excelize.RichTextRun) string {
 	var result strings.Builder
 
 	for _, rt := range richText {
-		text := rt.Text
+		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Thay \n bằng <br>
 		font := rt.Font
 
 		if font != nil {
@@ -44,15 +44,22 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 				text = "<u>" + text + "</u>"
 			}
 		}
+
 		result.WriteString(text)
 	}
+
 	return result.String()
 }
+
 func htmlToRichText(htmlText string) []excelize.RichTextRun {
 	// Nếu chuỗi rỗng, trả về một đoạn văn bản trống
 	if htmlText == "" {
 		return []excelize.RichTextRun{{Text: ""}}
 	}
+
+	// Thay thế <br> và <br/> bằng \n
+	htmlText = strings.ReplaceAll(htmlText, "<br>", "\n")
+	htmlText = strings.ReplaceAll(htmlText, "<br/>", "\n")
 
 	// Stack lưu trữ các thẻ mở
 	type tagInfo struct {
