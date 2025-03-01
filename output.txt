@@ -1,24 +1,33 @@
-A1: description
+A1: <p>description</p>
 B1: 
-A2: test này là <b>in đậm</b>, test này là <i>in nghiệm, </i>test này là <u>underline</u>
+A2: <p>test này là <b>in đậm</b>, test này là <i>in nghiệm, </i>test này là <u>underline</u></p>
 B2: 
-A3: test này là <i>in nghiệm</i>
+A3: <p>test này là <i>in nghiệm</i></p>
 B3: 
-A4: test này là <u>underline</u>
+A4: <p>test này là <u>underline</u></p>
 B4: 
-A5: text này là double underline
+A5: <p>text này là double underline</p>
 B5: 
-A6: test 1 chữ vừa <i><b>in đâm vừa in nghiêm</b></i>
+A6: <p>test 1 chữ vừa <i><b>in đâm vừa in nghiêm</b></i></p>
 B6: 
-A7: test này là vừa<i><b> </b></i><u><b>in đậm vừa underline</b></u>
+A7: <p>test này là vừa<i><b> </b></i><u><b>in đậm vừa underline</b></u></p>
 B7: 
-A8: test này là vừa <u><i>italic vừa underline</i></u>
+A8: <p>test này là vừa <u><i>italic vừa underline</i></u></p>
 B8: 
-A9: test này cả <u><i><b>3 thứ</b></i></u>
+A9: <p>test này cả <u><i><b>3 thứ</b></i></u></p>
 B9: 
-A10: đây là chỗ có xuống dòng<br>dòng 1<br>dòng 2
+A10: <p>đây là chỗ có xuống dòng
+dòng 1
+dòng 2</p>
 B10: 
-A11: đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3</u>
+A11: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline
+</p><p><b>dòng 1</b>
+</p><p><i>dòng 2</i>
+</p><p><u>dòng 3</u></p>
 B11: 
-A12: đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3<br></u><u><i><b>dòng 4</b></i></u>
+A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline
+</p><p><b>dòng 1</b>
+</p><p><i>dòng 2</i>
+</p><p><u>dòng 3
+</u></p><p><u><i><b>dòng 4</b></i></u></p>
 B12: 

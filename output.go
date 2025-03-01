@@ -24,35 +24,54 @@ func getEnvInt(key string, defaultValue int) int {
 	return intVal
 }
 
-// Hàm chuyển Rich Text từ Excel thành HTML (chỉ giữ Bold, Italic, Underline, và thay \n thành <br>)
+// Chuyển Rich Text từ Excel thành HTML với <p> và giữ nguyên định dạng
 func richTextToHTML(richText []excelize.RichTextRun) string {
 	var result strings.Builder
 
+	var paragraph strings.Builder
 	for _, rt := range richText {
-		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Thay \n bằng <br>
-		font := rt.Font
-
-		if font != nil {
-			if font.Bold {
+		text := rt.Text
+		if rt.Font != nil {
+			if rt.Font.Bold {
 				text = "<b>" + text + "</b>"
 			}
-			if font.Italic {
+			if rt.Font.Italic {
 				text = "<i>" + text + "</i>"
 			}
-			if font.Underline == "single" {
+			if rt.Font.Underline == "single" {
 				text = "<u>" + text + "</u>"
 			}
 		}
 
-		result.WriteString(text)
+		paragraph.WriteString(text)
+		if strings.Contains(rt.Text, "\n") {
+			result.WriteString("<p>" + paragraph.String() + "</p>")
+			paragraph.Reset()
+		}
+	}
+
+	if paragraph.Len() > 0 {
+		result.WriteString("<p>" + paragraph.String() + "</p>")
 	}
 
 	return result.String()
 }
 
-// Hàm thay thế ký tự xuống dòng bằng <br> nếu không có Rich Text
-func replaceNewlineWithBr(text string) string {
-	return strings.ReplaceAll(text, "\n", "<br>")
+// Hàm thay thế ký tự xuống dòng bằng <p>, giữ khoảng cách nếu có nhiều dòng trống
+func replaceNewlineWithParagraph(text string) string {
+	if text == "" {
+		return ""
+	}
+	paragraphs := strings.Split(text, "\n")
+	var result strings.Builder
+	for _, paragraph := range paragraphs {
+		if paragraph == "" {
+			result.WriteString("<p>&nbsp;</p>") // Giữ khoảng cách nếu có nhiều dòng trống
+		} else {
+			result.WriteString(fmt.Sprintf("<p>%s</p>", paragraph))
+		}
+	}
+	return result.String()
 }
 
 // Hàm lưu nội dung vào file .txt
@@ -80,7 +99,7 @@ func main() {
 		log.Fatal("Vui lòng đặt biến môi trường 'EXCEL_FILE' trong file .env!")
 	}
 
-	// Lấy dòng và cột từ ENV (mặc định: lấy từ START_ROW đến END_ROW, START_COL đến END_COL)
+	// Lấy dòng và cột từ ENV
 	startRow := getEnvInt("START_ROW", 1)
 	endRow := getEnvInt("END_ROW", 10)
 	startCol := getEnvInt("START_COL", 1)
@@ -110,19 +129,16 @@ func main() {
 			var content string
 
 			if err == nil && richText != nil && len(richText) > 0 {
-				// Nếu có Rich Text, chuyển đổi sang HTML
 				content = richTextToHTML(richText)
 			} else {
-				// Nếu không có Rich Text, lấy nội dung thường và thay thế \n bằng <br>
 				value, err := f.GetCellValue(sheetName, cellName)
 				if err != nil {
 					log.Printf("Lỗi khi đọc %s: %s\n", cellName, err)
 					continue
 				}
-				content = replaceNewlineWithBr(value)
+				content = replaceNewlineWithParagraph(value)
 			}
 
-			// Ghi dữ liệu vào file TXT (kèm tên ô)
 			finalContent.WriteString(fmt.Sprintf("%s: %s\n", cellName, content))
 		}
 	}
