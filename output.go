@@ -24,13 +24,13 @@ func getEnvInt(key string, defaultValue int) int {
 	return intVal
 }
 
-// Chuyển Rich Text từ Excel thành HTML, giữ tất cả nội dung trong một <p>
+// Chuyển Rich Text từ Excel thành HTML, giữ tất cả nội dung trong một <p> và thay \n bằng <br>
 func richTextToHTML(richText []excelize.RichTextRun) string {
 	var result strings.Builder
 	result.WriteString("<p>")
 
-	for _, rt := range richText {
-		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Giữ xuống dòng đúng cách
+	for i, rt := range richText {
+		text := rt.Text
 		if rt.Font != nil {
 			if rt.Font.Bold {
 				text = "<b>" + text + "</b>"
@@ -42,29 +42,13 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 				text = "<u>" + text + "</u>"
 			}
 		}
-		result.WriteString(text + " ")
+		if i > 0 {
+			result.WriteString(" ")
+		}
+		result.WriteString(strings.TrimSpace(strings.ReplaceAll(text, "\n", "<br>")))
 	}
 
 	result.WriteString("</p>")
-	return result.String()
-}
-
-// Xử lý nội dung PlainText, tách mỗi dòng thành một <p>
-func replaceNewlineWithParagraph(text string) string {
-	if text == "" {
-		return "<p>&nbsp;</p>"
-	}
-
-	lines := strings.Split(text, "\n")
-	var result strings.Builder
-	for _, line := range lines {
-		if strings.TrimSpace(line) == "" {
-			result.WriteString("<p>&nbsp;</p>")
-		} else {
-			result.WriteString("<p>" + line + "</p>")
-		}
-	}
-
 	return result.String()
 }
 
@@ -130,7 +114,12 @@ func main() {
 					log.Printf("Lỗi khi đọc %s: %s\n", cellName, err)
 					continue
 				}
-				content = replaceNewlineWithParagraph(value)
+				trimmedValue := strings.TrimSpace(value)
+				if trimmedValue == "" {
+					content = "<p>&nbsp;</p>"
+				} else {
+					content = "<p>" + strings.ReplaceAll(trimmedValue, "\n", "</p><p>") + "</p>"
+				}
 			}
 
 			finalContent.WriteString(fmt.Sprintf("%s: %s\n", cellName, content))
