@@ -24,13 +24,13 @@ func getEnvInt(key string, defaultValue int) int {
 	return intVal
 }
 
-// Chuyển Rich Text từ Excel thành HTML với <p> duy nhất, giữ nguyên định dạng
+// Chuyển Rich Text từ Excel thành HTML, giữ tất cả nội dung trong một <p>
 func richTextToHTML(richText []excelize.RichTextRun) string {
 	var result strings.Builder
-
 	result.WriteString("<p>")
+
 	for _, rt := range richText {
-		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Giữ xuống dòng bằng <br>
+		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Giữ xuống dòng đúng cách
 		if rt.Font != nil {
 			if rt.Font.Bold {
 				text = "<b>" + text + "</b>"
@@ -42,10 +42,10 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 				text = "<u>" + text + "</u>"
 			}
 		}
-		result.WriteString(text)
+		result.WriteString(text + " ")
 	}
-	result.WriteString("</p>")
 
+	result.WriteString("</p>")
 	return result.String()
 }
 
@@ -58,7 +58,7 @@ func replaceNewlineWithParagraph(text string) string {
 	lines := strings.Split(text, "\n")
 	var result strings.Builder
 	for _, line := range lines {
-		if line == "" {
+		if strings.TrimSpace(line) == "" {
 			result.WriteString("<p>&nbsp;</p>")
 		} else {
 			result.WriteString("<p>" + line + "</p>")

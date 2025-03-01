@@ -1,24 +1,24 @@
-A1: <p>description</p>
+A1: <p>description </p>
 B1: <p>&nbsp;</p>
-A2: <p>test này là <b>in đậm</b>, test này là <i>in nghiệm, </i>test này là <u>underline</u></p>
+A2: <p>test này là  <b>in đậm</b> , test này là  <i>in nghiệm, </i> test này là  <u>underline</u> </p>
 B2: <p>&nbsp;</p>
-A3: <p>test này là <i>in nghiệm</i></p>
+A3: <p>test này là  <i>in nghiệm</i> </p>
 B3: <p>&nbsp;</p>
-A4: <p>test này là <u>underline</u></p>
+A4: <p>test này là  <u>underline</u> </p>
 B4: <p>&nbsp;</p>
-A5: <p>text này là double underline</p>
+A5: <p>text này là  double underline </p>
 B5: <p>&nbsp;</p>
-A6: <p>test 1 chữ vừa <i><b>in đâm vừa in nghiêm</b></i></p>
+A6: <p>test 1 chữ vừa  <i><b>in đâm vừa in nghiêm</b></i> </p>
 B6: <p>&nbsp;</p>
-A7: <p>test này là vừa<i><b> </b></i><u><b>in đậm vừa underline</b></u></p>
+A7: <p>test này là vừa <i><b> </b></i> <u><b>in đậm vừa underline</b></u> </p>
 B7: <p>&nbsp;</p>
-A8: <p>test này là vừa <u><i>italic vừa underline</i></u></p>
+A8: <p>test này là vừa  <u><i>italic vừa underline</i></u> </p>
 B8: <p>&nbsp;</p>
-A9: <p>test này cả <u><i><b>3 thứ</b></i></u></p>
+A9: <p>test này cả  <u><i><b>3 thứ</b></i></u> </p>
 B9: <p>&nbsp;</p>
-A10: <p>đây là chỗ có xuống dòng<br>dòng 1<br>dòng 2</p>
+A10: <p>đây là chỗ có xuống dòng<br>dòng 1<br>dòng 2 </p>
 B10: <p>&nbsp;</p>
-A11: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3</u></p>
+A11: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br> <b>dòng 1</b> <br> <i>dòng 2</i> <br> <u>dòng 3</u> </p>
 B11: <p>&nbsp;</p>
-A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3<br></u><u><i><b>dòng 4</b></i></u></p>
+A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br> <b>dòng 1</b> <br> <i>dòng 2</i> <br> <u>dòng 3<br></u> <u><i><b>dòng 4</b></i></u> </p>
 B12: <p>&nbsp;</p>
