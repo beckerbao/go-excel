@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"bufio"
@@ -141,7 +141,7 @@ func importFromTextToExcel(txtFileName, excelFileName string) {
 	fmt.Printf("File Excel '%s' đã được tạo thành công!\n", excelFileName)
 }
 
-func main() {
-	// Đọc từ TXT và ghi vào Excel
-	importFromTextToExcel("output.txt", "imported.xlsx")
-}
+// func main() {
+// 	// Đọc từ TXT và ghi vào Excel
+// 	importFromTextToExcel("output.txt", "imported.xlsx")
+// }

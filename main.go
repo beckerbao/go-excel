@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"go-excel/common"
 	"log"
 	"os"
 	"strconv"
@@ -23,32 +24,6 @@ func getEnvInt(key string, defaultValue int) int {
 		log.Fatalf("Giá trị ENV '%s' không hợp lệ: %s", key, val)
 	}
 	return intVal
-}
-
-// Hàm chuyển Rich Text từ Excel thành HTML (chỉ giữ Bold, Italic, Underline, và thay \n thành <br>)
-func richTextToHTML(richText []excelize.RichTextRun) string {
-	var result strings.Builder
-
-	for _, rt := range richText {
-		text := strings.ReplaceAll(rt.Text, "\n", "<br>") // Thay \n bằng <br>
-		font := rt.Font
-
-		if font != nil {
-			if font.Bold {
-				text = "<b>" + text + "</b>"
-			}
-			if font.Italic {
-				text = "<i>" + text + "</i>"
-			}
-			if font.Underline == "single" {
-				text = "<u>" + text + "</u>"
-			}
-		}
-
-		result.WriteString(text)
-	}
-
-	return result.String()
 }
 
 func htmlToRichText(htmlText string) []excelize.RichTextRun {
@@ -272,7 +247,7 @@ func main() {
 			var cellContent string
 			if err == nil && richText != nil && len(richText) > 0 {
 				destExcel.SetCellRichText(sheetName, cellName, richText)
-				cellContent = richTextToHTML(richText)
+				cellContent = common.RichTextToHTML(richText)
 			} else {
 				value, _ := srcExcel.GetCellValue(sheetName, cellName)
 				destExcel.SetCellValue(sheetName, cellName, value)
