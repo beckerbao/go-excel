@@ -7,8 +7,7 @@ A6: <p>test 1 chữ vừa <i><b>in đâm vừa in nghiêm</b></i></p>
 A7: <p>test này là vừa <i><b> </b></i><u><b>in đậm vừa underline</b></u></p>
 A8: <p>test này là vừa <u><i>italic vừa underline</i></u></p>
 A9: <p>test này cả <u><i><b>3 thứ</b></i></u></p>
-A10: <p>đây là chỗ có xuống dòng</p><p>dòng 1</p><p>dòng 2</p>
-A11: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<b></p><p>dòng 1</b><i></p><p>dòng 2</i><u></p><p>dòng 3</u></p>
-A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<b></p><p>dòng 1</b><i></p><p>dòng 2</i><u></p><p>dòng 3</u></p><p><u><i><b>dòng 4</b></i></u></p>
+A10: <p>đây là chỗ có xuống dòng<br>dòng 1<br>dòng 2</p>
+A11: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3</u></p>
+A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3<br></u><u><i><b>dòng 4</b></i></u></p>
 A13: <p>test này là <b>in đậm.    </b>, test.     này là <i>in      nghiệm.   , </i>test này là <u>underline</u></p>
-A14: <p>chỗ này là xuống 2 và <u><b> 3</b></u>dòng</p><p>dòng 1</p><p>dòng 2</p><p>dòng 3</p>

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -22,6 +23,59 @@ func getEnvInt(key string, defaultValue int) int {
 		log.Fatalf("Giá trị ENV '%s' không hợp lệ: %s", key, val)
 	}
 	return intVal
+}
+// Hàm sửa lỗi cấu trúc HTML để đảm bảo format đúng
+func correctHTMLStructure(html string) string {
+	iteration := 0
+	for {
+		iteration++
+		fmt.Printf("Iteration %d: Fixing HTML structure...\n", iteration)
+		previousHtml := html
+
+		// Đóng <p> chưa đóng nếu mở trước một <p> mới
+		html = regexp.MustCompile(`(<p>[^<]+)(<p>)`).ReplaceAllString(html, "$1</p>$2")
+
+		// Đảm bảo không có thẻ </p> sai vị trí
+		html = regexp.MustCompile(`</p>(\s*)+</p>`).ReplaceAllString(html, "</p>")
+
+		// Di chuyển thẻ b/i/u vào trong <p> nếu bị đóng sai
+		html = regexp.MustCompile(`</p>\s*(<(b|i|u)>[^<]+</(b|i|u)>)\s*<p>`).ReplaceAllString(html, "<p>$1</p>")
+
+		// Đóng thẻ HTML mở chưa được đóng trước khi mở <p> mới
+		html = regexp.MustCompile(`(<(b|i|u)>)</p><p>`).ReplaceAllString(html, "$1</p><p>")
+
+		// Sửa lỗi khi có thẻ b/i/u mở bên ngoài nhưng bị đóng bên trong
+		html = regexp.MustCompile(`<(b|i|u)></p><p>([^<]+)</(b|i|u)>`).ReplaceAllString(html, "<p><$1>$2</$3></p>")
+
+		// Nếu không còn thay đổi, dừng vòng lặp
+		if html == previousHtml {
+			break
+		}
+	}
+	return html
+}
+// Hàm kiểm tra và sửa định dạng HTML khi thay thế <br> bằng </p><p>
+func fixHTMLFormat(html string) string {
+	// Thay thế <br> bằng </p><p>
+	html = strings.ReplaceAll(html, "<br>", "</p><p>")
+
+	// Đóng thẻ HTML chưa đóng trước khi mở <p> mới
+	html = regexp.MustCompile(`(<(b|i|u)>)</p><p>`).ReplaceAllString(html, "</p><p>$1")
+
+	// Loại bỏ các khoảng trắng dư thừa trước và sau <p>
+	html = regexp.MustCompile(`\s+</p>`).ReplaceAllString(html, "</p>")
+	html = regexp.MustCompile(`<p>\s+`).ReplaceAllString(html, "<p>")
+
+	// Đảm bảo không có thẻ <p> lồng nhau sai cách
+	html = strings.ReplaceAll(html, "<p></p>", "")
+
+	// Kiểm tra và sửa lỗi đóng/mở thẻ không hợp lệ
+	html = regexp.MustCompile(`</p><p>(</?(b|i|u)>)`).ReplaceAllString(html, "$1</p><p>")
+
+	// Chạy hàm sửa lỗi cấu trúc HTML
+	html = correctHTMLStructure(html)
+
+	return html
 }
 
 // Chuyển Rich Text từ Excel thành HTML, giữ tất cả nội dung trong một <p> và thay \n bằng <br>
@@ -49,7 +103,9 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 	}
 
 	result.WriteString("</p>")
-	return result.String()
+	// return result.String()
+	// Sửa định dạng HTML trước khi trả về
+	return fixHTMLFormat(result.String())
 }
 
 // Hàm lưu nội dung vào file .txt
