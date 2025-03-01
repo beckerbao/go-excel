@@ -42,9 +42,9 @@ func richTextToHTML(richText []excelize.RichTextRun) string {
 				text = "<u>" + text + "</u>"
 			}
 		}
-		if i > 0 {
+		if i > 0 && !strings.HasSuffix(result.String(), ">") {
 			result.WriteString(" ")
-		}
+		}		
 		result.WriteString(strings.TrimSpace(strings.ReplaceAll(text, "\n", "<br>")))
 	}
 
