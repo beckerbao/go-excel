@@ -21,7 +21,7 @@ func htmlToRichText(htmlText string) []excelize.RichTextRun {
 	htmlText = strings.ReplaceAll(htmlText, "<br/>", "\n")
 	// Thay thế <p> thành "" và </p> thành \n
 	htmlText = strings.ReplaceAll(htmlText, "<p>", "")
-	htmlText = strings.ReplaceAll(htmlText, "</p>", "\n")
+	htmlText = strings.ReplaceAll(htmlText, "</p>", "")
 
 	// Stack lưu trữ các thẻ mở
 	type tagInfo struct {

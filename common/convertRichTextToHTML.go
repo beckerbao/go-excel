@@ -42,7 +42,7 @@ func correctHTMLStructure(html string) string {
 // Hàm kiểm tra và sửa định dạng HTML khi thay thế <br> bằng </p><p>
 func fixHTMLFormat(html string) string {
 	// Thay thế <br> bằng </p><p>
-	html = strings.ReplaceAll(html, "<br>", "</p><p>")
+	// html = strings.ReplaceAll(html, "<br>", "</p><p>")
 
 	// Đóng thẻ HTML chưa đóng trước khi mở <p> mới
 	html = regexp.MustCompile(`(<(b|i|u)>)</p><p>`).ReplaceAllString(html, "</p><p>$1")
