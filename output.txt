@@ -34,7 +34,7 @@ C11:
 A12: <p>đây là chỗ có xuống dòng in nghiêng, in đâm và underline<br><b>dòng 1</b><br><i>dòng 2</i><br><u>dòng 3<br></u><u><i><b>dòng 4</b></i></u></p>
 B12: 
 C12: 
-A13: <p>test này là <b>in đậm.    </b>, test.     này là <i>in      nghiệm.   , </i>test này là <u>underline</u></p>
+A13: <p>test này là <b>in đậm.    </b>, test.     này là <i>in  <img itemprop="contentUrl" style="transform: translateX(-50%); left: 50%;" loading="lazy" intrinsicsize="680x408" alt="Thủ tướng: 'Tập trung hoàn thành đề án sáp nhập một số tỉnh'" class="lazy lazied" src="https://i1-vnexpress.vnecdn.net/2025/03/05/img8854-1741155266130998826573-7854-2259-1741160609.jpg?w=680&amp;h=408&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=Qi4R48CY8b-M7JmcihbF9g" data-ll-status="loaded">    nghiệm.   , </i>test này là <u>underline</u></p>
 B13: 
 C13: 
 A14: <p>chỗ này là xuống 2 và <u><b> 3</b> <img src="https://thisisimageurl.com" alt="test" label="test" /> </u>dòng<br>dòng 1 <br><br>dòng 2<br><br><br>dòng 3</p>
