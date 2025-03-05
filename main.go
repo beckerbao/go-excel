@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"go-excel/common"
 	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/joho/godotenv"
-	"github.com/xuri/excelize/v2"
 )
 
 // Hàm lấy giá trị từ ENV, nếu không có thì trả về giá trị mặc định
@@ -47,59 +44,59 @@ func main() {
 	// Tên file Excel sau khi import lại từ TXT
 	importedExcelFile := "imported_" + sourceFile
 
-	// Lấy dòng và cột từ ENV (mặc định: đọc từ hàng 1-10, cột A-E)
-	startRow := getEnvInt("START_ROW", 1)
-	endRow := getEnvInt("END_ROW", 10)
-	startCol := getEnvInt("START_COL", 1)
-	endCol := getEnvInt("END_COL", 5)
+	// // Lấy dòng và cột từ ENV (mặc định: đọc từ hàng 1-10, cột A-E)
+	// startRow := getEnvInt("START_ROW", 1)
+	// endRow := getEnvInt("END_ROW", 10)
+	// startCol := getEnvInt("START_COL", 1)
+	// endCol := getEnvInt("END_COL", 5)
 
-	// Mở file Excel gốc
-	srcExcel, err := excelize.OpenFile(sourceFile)
-	if err != nil {
-		log.Fatalf("Không thể mở file gốc: %s", err)
-	}
-	defer srcExcel.Close()
+	// // Mở file Excel gốc
+	// srcExcel, err := excelize.OpenFile(sourceFile)
+	// if err != nil {
+	// 	log.Fatalf("Không thể mở file gốc: %s", err)
+	// }
+	// defer srcExcel.Close()
 
-	// Tạo file Excel mới
-	destExcel := excelize.NewFile()
-	sheetName := srcExcel.GetSheetName(0)
-	destExcel.NewSheet(sheetName)
+	// // Tạo file Excel mới
+	// destExcel := excelize.NewFile()
+	// sheetName := srcExcel.GetSheetName(0)
+	// destExcel.NewSheet(sheetName)
 
-	// Chuỗi tổng hợp nội dung để lưu vào file .txt
-	var finalContent strings.Builder
+	// // Chuỗi tổng hợp nội dung để lưu vào file .txt
+	// var finalContent strings.Builder
 
-	// Duyệt từng ô để copy nội dung và định dạng
-	for rowIndex := startRow; rowIndex <= endRow; rowIndex++ {
-		for colIndex := startCol; colIndex <= endCol; colIndex++ {
-			cellName, _ := excelize.CoordinatesToCellName(colIndex, rowIndex)
+	// // Duyệt từng ô để copy nội dung và định dạng
+	// for rowIndex := startRow; rowIndex <= endRow; rowIndex++ {
+	// 	for colIndex := startCol; colIndex <= endCol; colIndex++ {
+	// 		cellName, _ := excelize.CoordinatesToCellName(colIndex, rowIndex)
 
-			richText, err := srcExcel.GetCellRichText(sheetName, cellName)
-			var cellContent string
-			if err == nil && richText != nil && len(richText) > 0 {
-				destExcel.SetCellRichText(sheetName, cellName, richText)
-				cellContent = common.RichTextToHTML(richText)
-			} else {
-				value, _ := srcExcel.GetCellValue(sheetName, cellName)
-				destExcel.SetCellValue(sheetName, cellName, value)
-				cellContent = value
-			}
+	// 		richText, err := srcExcel.GetCellRichText(sheetName, cellName)
+	// 		var cellContent string
+	// 		if err == nil && richText != nil && len(richText) > 0 {
+	// 			destExcel.SetCellRichText(sheetName, cellName, richText)
+	// 			cellContent = common.RichTextToHTML(richText)
+	// 		} else {
+	// 			value, _ := srcExcel.GetCellValue(sheetName, cellName)
+	// 			destExcel.SetCellValue(sheetName, cellName, value)
+	// 			cellContent = value
+	// 		}
 
-			// Lưu style
-			styleID, err := srcExcel.GetCellStyle(sheetName, cellName)
-			if err == nil {
-				destExcel.SetCellStyle(sheetName, cellName, cellName, styleID)
-			}
+	// 		// Lưu style
+	// 		styleID, err := srcExcel.GetCellStyle(sheetName, cellName)
+	// 		if err == nil {
+	// 			destExcel.SetCellStyle(sheetName, cellName, cellName, styleID)
+	// 		}
 
-			// Ghi dữ liệu vào file TXT
-			finalContent.WriteString(fmt.Sprintf("%s: %s\n", cellName, cellContent))
-		}
-	}
+	// 		// Ghi dữ liệu vào file TXT
+	// 		finalContent.WriteString(fmt.Sprintf("%s: %s\n", cellName, cellContent))
+	// 	}
+	// }
 
 	// Lưu file Excel mới
 	// _ = destExcel.SaveAs(targetFile)
 
 	// Lưu nội dung vào file .txt
-	_ = common.SaveToTextFile(outputTxtFile, finalContent.String())
+	// _ = common.SaveToTextFile(outputTxtFile, finalContent.String())
 
 	// Chuyển file TXT thành Excel với Rich Text
 	common.ImportFromTextToExcel(outputTxtFile, importedExcelFile)

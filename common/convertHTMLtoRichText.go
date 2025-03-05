@@ -5,16 +5,34 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/xuri/excelize/v2"
 )
+
+// Hàm xử lý thẻ <img>: Lấy link ảnh, đưa vào nội dung và loại bỏ <img>
+func processImageTags(htmlText string) string {
+	// Regex để tìm tất cả thẻ <img> và lấy URL từ thuộc tính src
+	imgRegex := regexp.MustCompile(`<img[^>]*src=["']([^"']+)["'][^>]*>`)
+
+	// Thay thế thẻ <img> bằng văn bản chứa URL ảnh
+	htmlText = imgRegex.ReplaceAllString(htmlText, "$1")
+
+	// Loại bỏ hoàn toàn các thẻ <img> còn lại (nếu có)
+	htmlText = regexp.MustCompile(`<img[^>]*>`).ReplaceAllString(htmlText, "")
+
+	return htmlText
+}
 
 func htmlToRichText(htmlText string) []excelize.RichTextRun {
 	// Nếu chuỗi rỗng, trả về một đoạn văn bản trống
 	if htmlText == "" {
 		return []excelize.RichTextRun{{Text: ""}}
 	}
+
+	// Xử lý thẻ <img> trước khi phân tích HTML
+	htmlText = processImageTags(htmlText)
 
 	// Thay thế <br>, <br/> và <p> bằng \n
 	htmlText = strings.ReplaceAll(htmlText, "<br>", "\n")
@@ -149,9 +167,9 @@ func ImportFromTextToExcel(txtFileName, excelFileName string) {
 		htmlContent := parts[1]
 
 		// Bỏ qua nội dung có chứa hình ảnh `<img>` (VÌ ĐÃ LOẠI BỎ)
-		if strings.Contains(htmlContent, "<img") {
-			continue
-		}
+		// if strings.Contains(htmlContent, "<img") {
+		// 	continue
+		// }
 
 		// Chuyển đổi HTML sang Rich Text
 		richText := htmlToRichText(htmlContent)
